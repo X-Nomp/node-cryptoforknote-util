@@ -182,6 +182,10 @@ NAN_METHOD(address_decode) {
         info.GetReturnValue().Set(Nan::Undefined());
         return;
     }
+    
+    // Skip integrated payment id if exists
+    if (data.size() > 2 * sizeof(crypto::public_key))
+        data.resize(2 * sizeof(crypto::public_key));
 
     account_public_address adr;
     if (!::serialization::parse_binary(data, adr) || !crypto::check_key(adr.m_spend_public_key) || !crypto::check_key(adr.m_view_public_key)) {
